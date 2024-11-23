@@ -40,7 +40,7 @@ export default function Join() {
 
 	useEffect(() => {
 		if (ready) {
-			window.location.href = "/battle";
+			window.location.href = "/play";
 		}
 	}, [ready]);
 

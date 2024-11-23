@@ -11,7 +11,7 @@ const useConnectRoom = () => {
 	const { socket, message } = useWebSocket();
 
 	const createRoom = (roomHash: string, clientId: string) => {
-		if (socket && socket.readyState === WebSocket.OPEN) {
+		if (socket) {
 			socket.send(
 				JSON.stringify({
 					type: "connect",
@@ -26,16 +26,16 @@ const useConnectRoom = () => {
 	};
 
 	useEffect(() => {
-		if (isSystemMessage(message)) {
-			const systemMessage = message as SystemMessage;
-			if (systemMessage.message === "start") {
+		const data = JSON.parse(message);
+		if (isSystemMessage(data)) {
+			if (data.message === "start") {
 				setReady(true);
 			}
 		}
 	}, [message]);
 
 	const joinRoom = (roomHash: string, clientId: string) => {
-		if (socket && socket.readyState === WebSocket.OPEN) {
+		if (socket) {
 			socket.send(
 				JSON.stringify({
 					type: "connect",
