@@ -1,4 +1,4 @@
-const hashing = async (str: string): Promise<string> => {
+export const hashing = async (str: string): Promise<string> => {
 	const uint8 = new TextEncoder().encode(str);
 	const digest = await crypto.subtle.digest("SHA-256", uint8);
 	return Array.from(new Uint8Array(digest))

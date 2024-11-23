@@ -1,5 +1,6 @@
 import { useEffect, useState } from "hono/jsx";
 import useWebSocket from "../hooks/useWebSocket";
+import { hashing } from "../utils/hashing";
 
 export default function Join() {
 	const [keyword, setKeyword] = useState<string>("");

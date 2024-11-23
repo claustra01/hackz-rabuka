@@ -1,8 +1,14 @@
-import { useState } from "hono/jsx";
+import { useEffect, useState } from "hono/jsx";
+import useConnectRoom from "../hooks/useConnectRoom";
 import useWebSocket from "../hooks/useWebSocket";
+import { hashing } from "../utils/hashing";
+import Loading from "./Loading";
 
 export default function Create() {
 	const [keyword, setKeyword] = useState<string>("");
+	const [waiting, setWaiting] = useState<boolean>(false);
+
+	const { createRoom, ready } = useConnectRoom();
 
 	const toTop = () => {
 		window.location.href = "/";
@@ -13,13 +19,31 @@ export default function Create() {
 			alert("合言葉を入力してください");
 			return;
 		}
-		const roomId = (await hashing(keyword)) as string;
-		useWebSocket("ws://localhost:3000/ws");
-		localStorage.setItem("roomId", roomId);
-		window.location.href = "/battle";
+
+		setWaiting(true);
+
+		try {
+			const roomId = (await hashing(keyword)) as string;
+			const clientId = "1";
+
+			localStorage.setItem("roomId", roomId);
+			localStorage.setItem("clientId", clientId);
+
+			createRoom(roomId, clientId);
+		} catch (e) {
+			console.error(e);
+			setWaiting(false);
+			localStorage.clear();
+		}
 	};
 
-	return (
+	useEffect(() => {
+		if (ready) {
+			window.location.href = "/battle";
+		}
+	}, [ready]);
+
+	return !waiting ? (
 		<div
 			style={{
 				height: "100vh",
@@ -101,5 +125,7 @@ export default function Create() {
 				</div>
 			</div>
 		</div>
+	) : (
+		<Loading />
 	);
 }

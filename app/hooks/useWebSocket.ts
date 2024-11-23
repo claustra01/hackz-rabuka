@@ -1,6 +1,6 @@
 import { useEffect, useState } from "hono/jsx";
 
-const useWebSocket = (url: string) => {
+const useWebSocket = (url = "ws://localhost:3000/ws" as string) => {
 	const [socket, setSocket] = useState<WebSocket | null>(null);
 	const [message, setMessage] = useState(null);
 
