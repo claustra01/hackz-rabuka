@@ -1,16 +1,13 @@
 import type { Context, Next } from "hono";
 
-export const filterMiddleware = async (
-  c: Context,
-  next: Next,
-) => {
-  await next();
-  const contentType = c.res.headers.get("Content-Type");
-  if (contentType?.startsWith("text/html")) {
-    const originalHtml = await c.res.text();
-    const modifiedHtml = originalHtml.replace(
-      "</head>",
-      `<style>
+export const filterMiddleware = async (c: Context, next: Next) => {
+	await next();
+	const contentType = c.res.headers.get("Content-Type");
+	if (contentType?.startsWith("text/html")) {
+		const originalHtml = await c.res.text();
+		const modifiedHtml = originalHtml.replace(
+			"</head>",
+			`<style>
         /* 炎が穏やかに揺らぐアニメーション */
         @keyframes flameFlicker {
           0% {
@@ -32,9 +29,9 @@ export const filterMiddleware = async (
         }
       </style>
       </head>`,
-    );
-    c.res = new Response(modifiedHtml, {
-      headers: { "Content-Type": "text/html" },
-    });
-  }
+		);
+		c.res = new Response(modifiedHtml, {
+			headers: { "Content-Type": "text/html" },
+		});
+	}
 };
