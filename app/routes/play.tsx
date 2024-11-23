@@ -7,10 +7,10 @@ const className = css`
 `;
 
 export default createRoute((c) => {
-  const name = c.req.query("name") ?? "Hono";
-  return c.render(
-    <div class={className}>
-      <ThreeCanvas />
-    </div>
-  );
+	const name = c.req.query("name") ?? "Hono";
+	return c.render(
+		<div class={className}>
+			<ThreeCanvas />
+		</div>,
+	);
 });
