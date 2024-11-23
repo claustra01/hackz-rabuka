@@ -45,6 +45,8 @@ jobs:
 
       - name: Configure docker
         run: gcloud auth configure-docker $REGION-docker.pkg.dev
+        env:
+          REGION: asia-northeast1
 
       - name: Push
         run: |
