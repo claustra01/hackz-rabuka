@@ -3,6 +3,7 @@ import { jsxRenderer } from "hono/jsx-renderer";
 import { Script } from "honox/server";
 
 export default jsxRenderer(({ children, title }) => {
+
   return (
     <html lang="en">
       <head>
@@ -16,4 +17,5 @@ export default jsxRenderer(({ children, title }) => {
       <body style={{ margin: 0 }}>{children}</body>
     </html>
   );
+
 });
