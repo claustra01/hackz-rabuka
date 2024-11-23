@@ -1,14 +1,16 @@
 name: deploy 
 on: 
-  push:
+  pull_request: 
     branches: 
       - main
+    types: 
+      - closed
 
 permissions:
   contents: write
 
 jobs: 
-  deploy: 
+  deploy-client: 
     runs-on: ubuntu-latest 
     steps: 
       - name: Checkout 
@@ -19,7 +21,7 @@ jobs:
         with: 
           node-version: '22'
 
-      - name: Deploy 
+      - name: Deploy
         run: | 
           npm install 
           npm run build 
@@ -27,4 +29,23 @@ jobs:
         env: 
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          
+
+  deploy-websocket:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "Logged in successfully"
+            cd hackz-rabuka
+            git pull
+            cd websocket
+            docker compose up -d --build
