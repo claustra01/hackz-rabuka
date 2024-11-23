@@ -50,7 +50,7 @@ type RoomInfo = {
 	updatedAt: Date;
 };
 
-const RoomMap: Map<string, RoomInfo> = new Map();
+const roomMap: Map<string, RoomInfo> = new Map();
 
 const server = Bun.serve({
 	port: 33000,
@@ -67,7 +67,7 @@ const server = Bun.serve({
 				switch (data.message) {
 					case "create": {
 						const { roomHash } = data;
-						RoomMap.set(roomHash, {
+						roomMap.set(roomHash, {
 							status: "waiting",
 							updatedAt: new Date(),
 						} as RoomInfo);
@@ -75,8 +75,8 @@ const server = Bun.serve({
 					}
 					case "join": {
 						const { roomHash } = data;
-						if (RoomMap.has(roomHash)) {
-							RoomMap.set(roomHash, {
+						if (roomMap.has(roomHash)) {
+							roomMap.set(roomHash, {
 								status: "playing",
 								updatedAt: new Date(),
 							} as RoomInfo);
@@ -107,10 +107,10 @@ const server = Bun.serve({
 				server.publish("robby", JSON.stringify(data));
 			}
 
-			for (const [roomHash, roomInfo] of Array.from(RoomMap.entries())) {
+			for (const [roomHash, roomInfo] of Array.from(roomMap.entries())) {
 				// 5分以上更新されていない部屋は削除
 				if (roomInfo.updatedAt.getTime() + 1000 * 60 * 5 < Date.now()) {
-					RoomMap.delete(roomHash);
+					roomMap.delete(roomHash);
 				}
 			}
 		},
