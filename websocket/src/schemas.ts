@@ -25,7 +25,10 @@ export type SystemMessage = {
 export type ResultMessage = {
 	type: "result";
 	roomHash: string;
-	result: Map<string, number>[]; // [{clientId: value}]
+	result: {
+		clientId: number;
+		value: number;
+	}[];
 };
 
 // server -> client
