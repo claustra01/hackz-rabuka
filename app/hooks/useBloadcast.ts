@@ -19,6 +19,18 @@ export const useBloadcast = () => {
 		}
 	};
 
+	const init = (roomHash: string) => {
+		setFireStatus(
+			new Map(fireStatus).set(
+				roomHash,
+				new Map([
+					["1", 1],
+					["2", 1],
+				]),
+			),
+		);
+	};
+
 	useEffect(() => {
 		if (socket) {
 			setIsReady(true);
@@ -36,5 +48,5 @@ export const useBloadcast = () => {
 		}
 	}, [message]);
 
-	return { isReady, fireStatus, sendMessage };
+	return { isReady, fireStatus, sendMessage, init };
 };
