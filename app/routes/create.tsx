@@ -16,13 +16,19 @@ export default createRoute((c) => {
       }}
     >
       <div>
-        <h1
-          initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          くそデカほのおくん
-        </h1>
+        <input
+          type="text"
+          placeholder="合言葉を入力"
+          style={{
+            padding: "1rem",
+            borderRadius: "0.5rem",
+            border: "1px solid #ccc",
+            fontSize: "1.5rem",
+            width: "100%",
+            boxSizing: "border-box",
+            marginBottom: "1rem",
+          }}
+        />
         <div style={{ display: "flex", gap: 24 }}>
           <button
             style={{
