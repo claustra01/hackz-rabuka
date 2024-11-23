@@ -2,6 +2,13 @@ import type { ServerWebSocket } from "bun";
 import { Hono } from "hono";
 import { createBunWebSocket } from "hono/bun";
 import type { WSContext } from "hono/ws";
+import {
+	SystemMessage,
+	isConnectRoomMessage,
+	isResultMessage,
+	isSystemMessage,
+	isUpdateFireMessage,
+} from "./schemas";
 
 const app = new Hono();
 
@@ -39,6 +46,13 @@ app.get(
 
 export default app;
 
+type RoomInfo = {
+	status: string;
+	updatedAt: Date;
+};
+
+const RoomMap: Map<string, RoomInfo> = new Map();
+
 const server = Bun.serve({
 	port: 33000,
 	fetch: app.fetch,
@@ -48,15 +62,51 @@ const server = Bun.serve({
 			console.log("WebSocket is connected.");
 		},
 		message: (ws: ServerWebSocket, message: string) => {
-			server.publish(
-				"robby",
-				JSON.stringify({
-					id: "server",
-					content: message,
-					user: { id: "server" },
-				}),
-			);
+			const data = JSON.parse(message);
+			if (isConnectRoomMessage(data)) {
+				switch (data.message) {
+					case "create": {
+						const { roomHash } = data;
+						RoomMap.set(roomHash, {
+							status: "waiting",
+							updatedAt: new Date(),
+						});
+						break;
+					}
+					case "join": {
+						const { roomHash } = data;
+						if (RoomMap.has(roomHash)) {
+							RoomMap.set(roomHash, {
+								status: "playing",
+								updatedAt: new Date(),
+							});
+
+							ws.send(
+								JSON.stringify({
+									type: "system",
+									roomHash: roomHash,
+									message: "start",
+								}),
+							);
+						} else {
+							ws.send(
+								JSON.stringify({
+									type: "error",
+									roomHash: roomHash,
+									message: "room is not exist",
+								}),
+							);
+						}
+						break;
+					}
+				}
+			}
+
+			if (isUpdateFireMessage(data)) {
+				ws.send(JSON.stringify(data));
+			}
 		},
+
 		close: (ws: ServerWebSocket) => {
 			ws.unsubscribe("robby");
 			console.log("WebSocket is closed.");
