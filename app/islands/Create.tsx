@@ -15,6 +15,8 @@ export default function Create() {
     }
     const roomId = (await hashing(keyword)) as string;
     useWebSocket(`ws://localhost:3000/ws`);
+    localStorage.setItem("roomId", roomId);
+    window.location.href = "battle";
   };
 
   return (
