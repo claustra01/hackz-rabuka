@@ -4,6 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode client && vite build",
+    "lint": "biome check ./app --write",
+    "lint:ci": "biome check ./app",
     "preview": "wrangler pages dev",
     "deploy": "$npm_execpath run build && wrangler pages deploy"
   },
@@ -15,6 +17,7 @@
     "honox": "^0.1.26"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@cloudflare/workers-types": "^4.20240529.0",
     "@hono/vite-build": "^1.0.0",
     "@hono/vite-dev-server": "^0.16.0",
