@@ -1,15 +1,49 @@
-import { useState } from "hono/jsx";
+import { useEffect, useState } from "hono/jsx";
+import useConnectRoom from "../hooks/useConnectRoom";
+import useWebSocket from "../hooks/useWebSocket";
+import { hashing } from "../utils/hashing";
+import Loading from "./Loading";
 
 export default function Create() {
-	const [keyeord, setKeyeord] = useState<string>("");
+	const [keyword, setKeyword] = useState<string>("");
+	const [waiting, setWaiting] = useState<boolean>(false);
+
+	const { createRoom, ready } = useConnectRoom();
 
 	const toTop = () => {
 		window.location.href = "/";
 	};
 
-	const handleCreateRoom = () => {};
+	const handleCreateRoom = async () => {
+		if (keyword === "") {
+			alert("合言葉を入力してください");
+			return;
+		}
 
-	return (
+		setWaiting(true);
+
+		try {
+			const roomId = (await hashing(keyword)) as string;
+			const clientId = "1";
+
+			localStorage.setItem("roomId", roomId);
+			localStorage.setItem("clientId", clientId);
+
+			createRoom(roomId, clientId);
+		} catch (e) {
+			console.error(e);
+			setWaiting(false);
+			localStorage.clear();
+		}
+	};
+
+	useEffect(() => {
+		if (ready) {
+			window.location.href = "/battle";
+		}
+	}, [ready]);
+
+	return !waiting ? (
 		<div
 			style={{
 				height: "100vh",
@@ -24,6 +58,13 @@ export default function Create() {
 		>
 			<div>
 				<input
+					value={keyword}
+					onInput={(e: InputEvent) => {
+						const target = e.target as HTMLInputElement;
+						if (target) {
+							setKeyword(target.value);
+						}
+					}}
 					type="text"
 					placeholder="合言葉を入力"
 					style={{
@@ -84,5 +125,7 @@ export default function Create() {
 				</div>
 			</div>
 		</div>
+	) : (
+		<Loading />
 	);
 }
