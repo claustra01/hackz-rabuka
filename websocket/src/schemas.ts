@@ -34,7 +34,7 @@ export type ErrorMessage = {
 	roomHash: string;
 	clientId: string;
 	message: string;
-}
+};
 
 export const isConnectRoomMessage = (
 	msg: unknown,
