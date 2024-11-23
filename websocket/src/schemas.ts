@@ -28,6 +28,14 @@ export type ResultMessage = {
 	result: Map<string, number>[]; // [{clientId: value}]
 };
 
+// server -> client
+export type ErrorMessage = {
+	type: "error";
+	roomHash: string;
+	clientId: string;
+	message: string;
+}
+
 export const isConnectRoomMessage = (
 	msg: unknown,
 ): msg is connectRoomMessage => {
@@ -90,5 +98,21 @@ export const isResultMessage = (msg: unknown): msg is ResultMessage => {
 		"result" in msg &&
 		Array.isArray(msg.result) &&
 		msg.result.every((r) => r instanceof Map)
+	);
+};
+
+export const isErrorMessage = (msg: unknown): msg is ErrorMessage => {
+	return (
+		typeof msg === "object" &&
+		msg !== null &&
+		"type" in msg &&
+		typeof msg.type === "string" &&
+		msg.type === "error" &&
+		"roomHash" in msg &&
+		typeof msg.roomHash === "string" &&
+		"clientId" in msg &&
+		typeof msg.clientId === "string" &&
+		"message" in msg &&
+		typeof msg.message === "string"
 	);
 };
