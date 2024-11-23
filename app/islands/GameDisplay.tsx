@@ -63,7 +63,7 @@ export default function GameDisplay() {
 					if (k === roomId) {
 						return Array.from(v.entries()).map(([cId, value]) => {
 							return (
-								<div>
+								<div key={cId}>
 									<ThreeCanvas honoPoint={value} key={cId} />
 									<h2>{cId === clientId ? "自分" : "相手"}</h2>
 								</div>
