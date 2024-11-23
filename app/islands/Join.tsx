@@ -1,4 +1,4 @@
-export default function Create() {
+export default function Join() {
   return (
     <div
       style={{
@@ -66,7 +66,7 @@ export default function Create() {
               },
             }}
           >
-            部屋を作成
+            部屋に入る
           </button>
         </div>
       </div>

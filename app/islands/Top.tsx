@@ -53,6 +53,7 @@ export default function Top() {
             部屋を作成
           </button>
           <button
+            onClick={() => (window.location.href = "/join")}
             style={{
               padding: "1rem 2rem",
               backgroundColor: "#f59e0b",
