@@ -4,7 +4,7 @@ import { useFireCreate } from "../hooks/useFireCreate";
 import { useInitThree } from "../hooks/useInitThree";
 
 interface ThreeCanvasProp {
-	honoPoint: RefObject<number>;
+	honoPoint: number;
 }
 
 export default function ThreeCanvas({ honoPoint }: ThreeCanvasProp) {
@@ -23,11 +23,17 @@ export default function ThreeCanvas({ honoPoint }: ThreeCanvasProp) {
 		//mountRefのサイズを設定
 		if (!mountRef.current) return;
 		console.log("done");
-		const width = window.innerWidth;
-		const height = window.innerHeight;
+		const width = 300;
+		const height = 300;
 		mountRef.current.style.width = `${width}px`;
 		mountRef.current.style.height = `${height}px`;
 		useInitThree(mountRef, rendererRef, cameraRef, sceneRef, lightRef);
+		//クリーンアップ
+		return () => {
+			if (mountRef.current && rendererRef.current) {
+				mountRef.current.removeChild(rendererRef.current.domElement);
+			}
+		};
 	});
 
 	useEffect(() => {
@@ -36,16 +42,16 @@ export default function ThreeCanvas({ honoPoint }: ThreeCanvasProp) {
 			fireRef.current = useFireCreate(sceneRef);
 
 			const animate = () => {
-				if (fireRef.current && honoPoint.current) {
+				if (fireRef.current && honoPoint) {
 					fireRef.current.material.uniforms.scale.value = new THREE.Vector3(
-						0.5 + honoPoint.current,
-						1 + honoPoint.current * 2,
-						0.5 + honoPoint.current,
+						0.5 + honoPoint,
+						1 + honoPoint * 2,
+						0.5 + honoPoint,
 					);
 					fireRef.current.scale.set(
-						0.5 + honoPoint.current,
-						1 + honoPoint.current * 2,
-						0.5 + honoPoint.current,
+						0.5 + honoPoint,
+						1 + honoPoint * 2,
+						0.5 + honoPoint,
 					);
 				}
 				requestAnimationFrame(animate);

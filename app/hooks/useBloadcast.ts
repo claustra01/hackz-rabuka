@@ -20,7 +20,7 @@ export const useBloadcast = () => {
 	};
 
 	useEffect(() => {
-		if (socket && socket.readyState === WebSocket.OPEN) {
+		if (socket) {
 			setIsReady(true);
 		} else {
 			setIsReady(false);
