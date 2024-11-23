@@ -1,6 +1,5 @@
 import { css } from "hono/css";
 import { createRoute } from "honox/factory";
-import AudioClass from "../islands/audioClass";
 import ThreeCanvas from "../islands/threeCanvas";
 
 const className = css`
@@ -8,11 +7,10 @@ const className = css`
 `;
 
 export default createRoute((c) => {
-	const name = c.req.query("name") ?? "Hono";
-	return c.render(
-		<div class={className}>
-			<AudioClass />
-			<ThreeCanvas />
-		</div>,
-	);
+  const name = c.req.query("name") ?? "Hono";
+  return c.render(
+    <div class={className}>
+      <ThreeCanvas />
+    </div>
+  );
 });
