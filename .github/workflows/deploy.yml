@@ -32,8 +32,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: SSH login
-        uses: appleboy/ssh-action@v1
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.2.0
         with:
           key: ${{ secrets.SSH_KEY }}
           host: ${{ secrets.SSH_HOST }}
@@ -41,3 +41,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "Logged in successfully"
+            cd hackz-rabuka
+            git pull
+            cd websocket
+            docker compose up -d --build
