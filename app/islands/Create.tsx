@@ -1,7 +1,13 @@
+import { useState } from "hono/jsx";
+
 export default function Create() {
+	const [keyeord, setKeyeord] = useState<string>("");
+
 	const toTop = () => {
 		window.location.href = "/";
 	};
+
+	const handleCreateRoom = () => {};
 
 	return (
 		<div
@@ -55,6 +61,7 @@ export default function Create() {
 						戻る
 					</button>
 					<button
+						onClick={handleCreateRoom}
 						type="button"
 						style={{
 							padding: "1rem 2rem",
