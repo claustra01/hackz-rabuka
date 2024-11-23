@@ -6,6 +6,7 @@
     "build": "vite build --mode client && vite build",
     "lint": "biome check ./app --write",
     "lint:ci": "biome check ./app",
+    "lint:force": "biome check ./app --write --unsafe",
     "preview": "wrangler pages dev",
     "deploy": "$npm_execpath run build && wrangler pages deploy"
   },
