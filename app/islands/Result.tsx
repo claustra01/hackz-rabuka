@@ -1,7 +1,21 @@
+import { useEffect, useState } from "hono/jsx";
+
 export default function Result() {
+	const [result, setResult] = useState<string>("");
+
 	const toTop = () => {
 		window.location.href = "/";
 	};
+
+	useEffect(() => {
+		const roomId = localStorage.getItem("roomId");
+		if (!roomId) {
+			window.location.href = "/";
+		}
+		//roomIdからresultを取得
+		setResult(result);
+		localStorage.clear();
+	}, []);
 
 	return (
 		<div

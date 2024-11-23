@@ -1,3 +1,5 @@
+import { useEffect } from "hono/jsx";
+
 export default function Top() {
 	const toCreate = () => {
 		window.location.href = "/create";
@@ -5,6 +7,11 @@ export default function Top() {
 	const toJoin = () => {
 		window.location.href = "/join";
 	};
+
+	useEffect(() => {
+		localStorage.clear();
+	}, []);
+
 	return (
 		<div
 			style={{

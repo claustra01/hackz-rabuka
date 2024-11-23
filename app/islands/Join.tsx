@@ -1,7 +1,33 @@
+import { useEffect, useState } from "hono/jsx";
+import useWebSocket from "../hooks/useWebSocket";
+
 export default function Join() {
+	const [keyword, setKeyword] = useState<string>("");
+
 	const toTop = () => {
 		window.location.href = "/";
 	};
+
+	useEffect(() => {
+		localStorage.clear();
+	}, []);
+
+	const handleJoinRoom = async () => {
+		if (keyword === "") {
+			alert("合言葉を入力してください");
+			return;
+		}
+		const roomId = (await hashing(keyword)) as string;
+		try {
+			useWebSocket("ws://localhost:3000");
+			localStorage.setItem("roomId", roomId);
+			window.location.href = "/battle";
+		} catch (e) {
+			console.error(e);
+			alert("部屋が存在しません");
+		}
+	};
+
 	return (
 		<div
 			style={{
@@ -17,6 +43,13 @@ export default function Join() {
 		>
 			<div>
 				<input
+					value={keyword}
+					onInput={(e: InputEvent) => {
+						const target = e.target as HTMLInputElement;
+						if (target) {
+							setKeyword(target.value);
+						}
+					}}
 					type="text"
 					placeholder="合言葉を入力"
 					style={{
@@ -54,6 +87,7 @@ export default function Join() {
 						戻る
 					</button>
 					<button
+						onClick={handleJoinRoom}
 						type="button"
 						style={{
 							padding: "1rem 2rem",
