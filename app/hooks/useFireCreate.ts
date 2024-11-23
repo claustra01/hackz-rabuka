@@ -217,7 +217,7 @@ export const useFireCreate = (sceneRef: RefObject<THREE.Scene | null>) => {
 	fireMaterial.uniforms.fireTex.value = fireTex;
 	fireMaterial.uniforms.color.value = color || new THREE.Color(0xeeeeee);
 	fireMaterial.uniforms.invModelMatrix.value = new THREE.Matrix4();
-	fireMaterial.uniforms.scale.value = new THREE.Vector3(1, 1, 1);
+	fireMaterial.uniforms.scale.value = new THREE.Vector3(0.5, 0.5, 0.5);
 	fireMaterial.uniforms.seed.value = Math.random() * 19.19;
 	fireMaterial.uniforms.gain.value = 0;
 	fireMaterial.uniforms.lacunarity.value = 2.0;
@@ -240,10 +240,10 @@ export const useFireCreate = (sceneRef: RefObject<THREE.Scene | null>) => {
 	const wireframe = new THREE.Mesh(fireMesh.geometry, wireframeMat.clone());
 	fireMesh.add(wireframe);
 	//fireMeshを大きくする
-	fireMesh.scale.set(2, 2, 2);
+	fireMesh.scale.set(0.5, 1, 0.5);
 	fireMesh.position.set(0, 0, 0);
 	wireframe.visible = false;
 	sceneRef.current?.add(fireMesh);
 	animate();
-	console.log(sceneRef.current);
+	return fireMesh;
 };

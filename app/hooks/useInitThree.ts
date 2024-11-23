@@ -48,7 +48,6 @@ export const useInitThree = (
 	const animate = () => {
 		requestAnimationFrame(animate);
 		renderer.render(scene, camera);
-		console.log("animate");
 	};
 	animate();
 };
