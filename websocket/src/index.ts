@@ -3,10 +3,9 @@ import { Hono } from "hono";
 import { createBunWebSocket } from "hono/bun";
 import type { WSContext } from "hono/ws";
 import {
-	SystemMessage,
+	type ErrorMessage,
+	type SystemMessage,
 	isConnectRoomMessage,
-	isResultMessage,
-	isSystemMessage,
 	isUpdateFireMessage,
 } from "./schemas";
 
@@ -51,7 +50,7 @@ type RoomInfo = {
 	updatedAt: Date;
 };
 
-const RoomMap: Map<string, RoomInfo> = new Map();
+const roomMap: Map<string, RoomInfo> = new Map();
 
 const server = Bun.serve({
 	port: 33000,
@@ -63,38 +62,40 @@ const server = Bun.serve({
 		},
 		message: (ws: ServerWebSocket, message: string) => {
 			const data = JSON.parse(message);
+
 			if (isConnectRoomMessage(data)) {
 				switch (data.message) {
 					case "create": {
 						const { roomHash } = data;
-						RoomMap.set(roomHash, {
+						roomMap.set(roomHash, {
 							status: "waiting",
 							updatedAt: new Date(),
-						});
+						} as RoomInfo);
 						break;
 					}
 					case "join": {
 						const { roomHash } = data;
-						if (RoomMap.has(roomHash)) {
-							RoomMap.set(roomHash, {
+						if (roomMap.has(roomHash)) {
+							roomMap.set(roomHash, {
 								status: "playing",
 								updatedAt: new Date(),
-							});
-
-							ws.send(
+							} as RoomInfo);
+							server.publish(
+								"robby",
 								JSON.stringify({
 									type: "system",
 									roomHash: roomHash,
 									message: "start",
-								}),
+								} as SystemMessage),
 							);
 						} else {
-							ws.send(
+							server.publish(
+								"robby",
 								JSON.stringify({
 									type: "error",
 									roomHash: roomHash,
 									message: "room is not exist",
-								}),
+								} as ErrorMessage),
 							);
 						}
 						break;
@@ -103,7 +104,14 @@ const server = Bun.serve({
 			}
 
 			if (isUpdateFireMessage(data)) {
-				ws.send(JSON.stringify(data));
+				server.publish("robby", JSON.stringify(data));
+			}
+
+			for (const [roomHash, roomInfo] of Array.from(roomMap.entries())) {
+				// 5分以上更新されていない部屋は削除
+				if (roomInfo.updatedAt.getTime() + 1000 * 60 * 5 < Date.now()) {
+					roomMap.delete(roomHash);
+				}
 			}
 		},
 
