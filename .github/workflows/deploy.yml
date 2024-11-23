@@ -1,14 +1,12 @@
 name: deploy 
 on: 
   push:
-    branches: 
-      - main
 
 permissions:
   contents: write
 
 jobs: 
-  deploy: 
+  deploy-client: 
     runs-on: ubuntu-latest 
     steps: 
       - name: Checkout 
@@ -19,7 +17,7 @@ jobs:
         with: 
           node-version: '22'
 
-      - name: Deploy 
+      - name: Deploy
         run: | 
           npm install 
           npm run build 
@@ -27,4 +25,49 @@ jobs:
         env: 
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          
+
+  deploy-websocket:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: "auth"
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCLOUD_AUTH }}"
+
+      - name: Setup google cloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Configure docker
+        run: gcloud auth configure-docker $REGION-docker.pkg.dev
+
+      - name: Push
+        run: |
+          cd websocket
+          docker build --platform linux/amd64 -t $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG .
+          docker push $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SERVICE_NAME: websocket
+          IMAGE: image
+          TAG: latest
+          REGION: asia-northeast1
+
+      - name: Deploy
+        run: | 
+          gcloud run deploy $SERVICE_NAME \
+            --image $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG \
+            --platform managed \
+            --region $REGION \
+            --allow-unauthenticated
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SERVICE_NAME: websocket
+          IMAGE: image
+          TAG: latest
+          REGION: asia-northeast1
