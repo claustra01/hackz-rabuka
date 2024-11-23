@@ -1,45 +1,37 @@
-name: deploy
-on:
+name: deploy 
+on: 
   push:
-    branches:
+    branches: 
       - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
+permissions:
+  contents: write
+
+jobs: 
+  deploy: 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Checkout 
         uses: actions/checkout@v4
 
-      - name: Node setup
-        uses: actions/setup-node@v4
-        with:
+      - name: Node setup 
+        uses: actions/setup-node@v4 
+        with: 
           node-version: '22'
 
-      - name: Deploy
-        run: |
-          npm install
-          npm run build
-          npm run deploy > deploy.log
-          DEPLOY_URL=$(grep -o 'https://[a-zA-Z0-9.-]*\.pages\.dev' deploy.log)
-          echo "Deployment URL: $DEPLOY_URL"
-          if [ -n "$DEPLOY_URL" ]; then
-            if grep -q '### Deployment URL' README.md; then
-              sed -i "s|^.*https://.*pages.dev.*$|$DEPLOY_URL|" README.md
-            else
-              echo -e "\n### Deployment URL\n$DEPLOY_URL" >> README.md
-            fi
-          fi
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Commit updated README
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "[bot] update deployment URL in README" || echo "No changes to commit"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy 
+        run: | 
+          npm install 
+          npm run build 
+          npm run deploy > deploy.log 
+          DEPLOY_URL=$(grep -o 'https://[a-zA-Z0-9.-]*\.pages\.dev' deploy.log) 
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+          curl -X PATCH \
+            -H "Authorization: token $PERSONAL_ACCESS_TOKEN" \
+            -d "{\"homepage\": \"$DEPLOY_URL\"}" \
+            https://api.github.com/repos/${{ github.repository }}
+        env: 
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }} 
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          
