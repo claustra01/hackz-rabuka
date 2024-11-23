@@ -1,0 +1,73 @@
+{
+  "_honox-island-BlOp-8nr.js": {
+    "file": "static/honox-island-BlOp-8nr.js",
+    "name": "honox-island",
+    "imports": [
+      "app/client.ts"
+    ]
+  },
+  "app/client.ts": {
+    "file": "static/client-DhYZ6wKG.js",
+    "name": "client",
+    "src": "app/client.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "app/islands/audioClass.tsx",
+      "app/islands/counter.tsx",
+      "app/islands/micSwitch.tsx",
+      "app/islands/threeCanvas.tsx",
+      "node_modules/honox/dist/client/runtime.js",
+      "node_modules/honox/dist/client/runtime.js"
+    ]
+  },
+  "app/islands/audioClass.tsx": {
+    "file": "static/audioClass-C3EnvXbB.js",
+    "name": "audioClass",
+    "src": "app/islands/audioClass.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "app/client.ts",
+      "_honox-island-BlOp-8nr.js",
+      "app/islands/micSwitch.tsx"
+    ]
+  },
+  "app/islands/counter.tsx": {
+    "file": "static/counter-1PxWTYew.js",
+    "name": "counter",
+    "src": "app/islands/counter.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "app/client.ts",
+      "_honox-island-BlOp-8nr.js"
+    ]
+  },
+  "app/islands/micSwitch.tsx": {
+    "file": "static/micSwitch-BZxgHWN6.js",
+    "name": "micSwitch",
+    "src": "app/islands/micSwitch.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "app/client.ts",
+      "_honox-island-BlOp-8nr.js"
+    ]
+  },
+  "app/islands/threeCanvas.tsx": {
+    "file": "static/threeCanvas-CBwCCMN2.js",
+    "name": "threeCanvas",
+    "src": "app/islands/threeCanvas.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "app/client.ts",
+      "_honox-island-BlOp-8nr.js"
+    ]
+  },
+  "node_modules/honox/dist/client/runtime.js": {
+    "file": "static/runtime-BzWHSOLi.js",
+    "name": "runtime",
+    "src": "node_modules/honox/dist/client/runtime.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "app/client.ts"
+    ]
+  }
+}
