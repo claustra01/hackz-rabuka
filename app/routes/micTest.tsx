@@ -1,9 +1,5 @@
 import { css } from "hono/css";
 import { createRoute } from "honox/factory";
-import { FilesetResolver, AudioClassifier } from "@mediapipe/tasks-audio";
-import { useState } from "hono/jsx";
-import Counter from "../islands/counter";
-import MicSwitch from "../islands/micSwitch";
 import AudioClass from "../islands/audioClass";
 
 const className = css`
