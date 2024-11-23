@@ -23,10 +23,10 @@ jobs:
           npm run build 
           npm run deploy > deploy.log 
           DEPLOY_URL=$(grep -o 'https://[a-zA-Z0-9.-]*\.pages\.dev' deploy.log) 
-          echo "Deployment URL: $DEPLOY_URL" 
+          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
           curl -X PATCH \
             -H "Authorization: token $PERSONAL_ACCESS_TOKEN" \
-            -d '{"homepage": "$DEPLOY_URL"}' \
+            -d "{\"homepage\": \"$DEPLOY_URL\"}" \
             https://api.github.com/repos/${{ github.repository }}
         env: 
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }} 
