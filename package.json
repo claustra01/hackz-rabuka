@@ -4,8 +4,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode client && vite build",
-    "lint": "biome check ./app --write",
-    "lint:ci": "biome check ./app",
+    "lint": "biome check ./app --write && biome check ./websocket/src --write",
+    "lint:ci": "biome check ./app && biome check ./websocket/src",
+    "lint:force": "biome check ./app --write --unsafe && biome check ./websocket/src --write --unsafe",
     "preview": "wrangler pages dev",
     "deploy": "$npm_execpath run build && wrangler pages deploy"
   },

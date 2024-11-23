@@ -1,6 +1,6 @@
 import { createRoute } from "honox/factory";
-import Top from "../islands/Top";
+import Join from "../islands/Join";
 
 export default createRoute((c) => {
-	return c.render(<Top />);
+	return c.render(<Join />);
 });
