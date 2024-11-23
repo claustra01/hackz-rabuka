@@ -1,14 +1,18 @@
 import { useState } from "hono/jsx";
-import useWebSocket from "../hooks/useWebSocket";
+import { useBloadcast } from "../hooks/useBloadcast";
 
 export default function WebSocketComponent() {
 	const [inputMessage, setInputMessage] = useState("");
-	const { socket, message } = useWebSocket("ws://localhost:33000/ws"); // WebSocketサーバーのURL
+	const { isReady, fireStatus, sendMessage } = useBloadcast();
 
 	const handleSendMessage = () => {
-		if (socket && inputMessage) {
-			socket.send(inputMessage);
-			setInputMessage("");
+		if (isReady) {
+			sendMessage({
+				type: "updateFire",
+				roomHash: "room1",
+				clientId: "client1",
+				value: Number.parseFloat(inputMessage),
+			});
 		}
 	};
 
@@ -29,8 +33,21 @@ export default function WebSocketComponent() {
 				</button>
 			</div>
 			<div>
-				<h2>Received Message</h2>
-				<p>{message}</p>
+				<h2>Received Fire Status</h2>
+				<ul>
+					{Array.from(fireStatus.entries()).map(([roomHash, clientMap]) => (
+						<li key={roomHash}>
+							<strong>Room: {roomHash}</strong>
+							<ul>
+								{Array.from(clientMap.entries()).map(([clientId, value]) => (
+									<li key={clientId}>
+										Client: {clientId}, Value: {value}
+									</li>
+								))}
+							</ul>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	);
