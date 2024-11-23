@@ -3,8 +3,8 @@ import { Hono } from "hono";
 import { createBunWebSocket } from "hono/bun";
 import type { WSContext } from "hono/ws";
 import {
-	ErrorMessage,
-	SystemMessage,
+	type ErrorMessage,
+	type SystemMessage,
 	isConnectRoomMessage,
 	isUpdateFireMessage,
 } from "./schemas";
@@ -105,12 +105,12 @@ const server = Bun.serve({
 				ws.send(JSON.stringify(data));
 			}
 
-			Array.from(RoomMap.entries()).forEach(([roomHash, roomInfo]) => {
+			for (const [roomHash, roomInfo] of Array.from(RoomMap.entries())) {
 				// 5分以上更新されていない部屋は削除
 				if (roomInfo.updatedAt.getTime() + 1000 * 60 * 5 < Date.now()) {
 					RoomMap.delete(roomHash);
 				}
-			});
+			}
 		},
 
 		close: (ws: ServerWebSocket) => {
