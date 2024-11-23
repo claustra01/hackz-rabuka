@@ -11,7 +11,7 @@ export default function WebSocketComponent() {
 				type: "updateFire",
 				roomHash: "room1",
 				clientId: "client1",
-				value: parseFloat(inputMessage),
+				value: Number.parseFloat(inputMessage),
 			});
 		}
 	};
@@ -32,23 +32,23 @@ export default function WebSocketComponent() {
 					Send
 				</button>
 			</div>
-			<div> 
-        <h2>Received Fire Status</h2> 
-        <ul> 
-          {Array.from(fireStatus.entries()).map(([roomHash, clientMap]) => ( 
-            <li key={roomHash}> 
-              <strong>Room: {roomHash}</strong> 
-              <ul> 
-                {Array.from(clientMap.entries()).map(([clientId, value]) => ( 
-                  <li key={clientId}> 
-                    Client: {clientId}, Value: {value} 
-                  </li> 
-                ))} 
-              </ul> 
-            </li> 
-          ))} 
-        </ul> 
-      </div> 
+			<div>
+				<h2>Received Fire Status</h2>
+				<ul>
+					{Array.from(fireStatus.entries()).map(([roomHash, clientMap]) => (
+						<li key={roomHash}>
+							<strong>Room: {roomHash}</strong>
+							<ul>
+								{Array.from(clientMap.entries()).map(([clientId, value]) => (
+									<li key={clientId}>
+										Client: {clientId}, Value: {value}
+									</li>
+								))}
+							</ul>
+						</li>
+					))}
+				</ul>
+			</div>
 		</div>
 	);
 }
