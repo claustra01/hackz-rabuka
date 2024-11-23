@@ -3,8 +3,7 @@ on:
   push
 
 permissions:
-  contents: write
-  pull-requests: write
+  admin: write
 
 jobs: 
   deploy: 
