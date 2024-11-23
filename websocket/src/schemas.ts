@@ -99,7 +99,15 @@ export const isResultMessage = (msg: unknown): msg is ResultMessage => {
 		typeof msg.roomHash === "string" &&
 		"result" in msg &&
 		Array.isArray(msg.result) &&
-		msg.result.every((r) => r instanceof Map)
+		msg.result.every(
+			(result) =>
+				typeof result === "object" &&
+				result !== null &&
+				"clientId" in result &&
+				typeof result.clientId === "number" &&
+				"value" in result &&
+				typeof result.value === "number",
+		)
 	);
 };
 
