@@ -41,6 +41,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "Logged in successfully"
+            ls
             cd hackz-rabuka
             git pull
             cd websocket
