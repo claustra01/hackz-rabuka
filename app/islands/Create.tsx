@@ -39,7 +39,7 @@ export default function Create() {
 
 	useEffect(() => {
 		if (ready) {
-			window.location.href = "/battle";
+			window.location.href = "/play";
 		}
 	}, [ready]);
 
