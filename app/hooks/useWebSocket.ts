@@ -4,7 +4,7 @@ const useWebSocket = () => {
 	const [socket, setSocket] = useState<WebSocket | null>(null);
 	const [message, setMessage] = useState<string>("");
 
-	const url = process.env.WEBSOCKET_URL || "ws://localhost:33000/ws";
+	const url = "ws://localhost:33000/ws";
 
 	useEffect(() => {
 		const ws = new WebSocket(url);
