@@ -1,5 +1,6 @@
-import { use, useEffect, useRef } from "hono/jsx";
-import * as THREE from "three";
+import { useEffect, useRef } from "hono/jsx";
+import type * as THREE from "three";
+import { useFireCreate } from "./hooks/useFireCreate";
 import { useInitThree } from "./hooks/useInitThree";
 
 export default function ThreeCanvas() {
@@ -21,27 +22,11 @@ export default function ThreeCanvas() {
 	});
 
 	useEffect(() => {
-		//cubeを作成
-		if (!sceneRef.current) return;
-		const geometry = new THREE.BoxGeometry(1, 1, 1);
-		const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-		const cube = new THREE.Mesh(geometry, material);
-		sceneRef.current.add(cube);
-		objectRef.current = cube;
+		//cubeを追加
+		if (sceneRef.current) {
+			useFireCreate(sceneRef);
+		}
 	}, [sceneRef.current]);
-
-	useEffect(() => {
-		//cubeを回転
-		if (!objectRef.current) return;
-		const animate = () => {
-			if (!objectRef.current || !sceneRef.current || !cameraRef.current) return;
-			objectRef.current.rotation.x += 0.01;
-			objectRef.current.rotation.y += 0.01;
-			rendererRef.current?.render(sceneRef.current, cameraRef.current);
-			requestAnimationFrame(animate);
-		};
-		animate();
-	}, [objectRef.current]);
 
 	return <div ref={mountRef} />;
 }
