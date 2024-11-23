@@ -1,9 +1,14 @@
 import { useEffect, useState } from "hono/jsx";
+import useConnectRoom from "../hooks/useConnectRoom";
 import useWebSocket from "../hooks/useWebSocket";
 import { hashing } from "../utils/hashing";
+import Loading from "./Loading";
 
 export default function Join() {
+	const [waiting, setWaiting] = useState<boolean>(false);
 	const [keyword, setKeyword] = useState<string>("");
+
+	const { joinRoom, ready } = useConnectRoom();
 
 	const toTop = () => {
 		window.location.href = "/";
@@ -18,18 +23,28 @@ export default function Join() {
 			alert("合言葉を入力してください");
 			return;
 		}
-		const roomId = (await hashing(keyword)) as string;
 		try {
-			useWebSocket("ws://localhost:3000");
+			const roomId = (await hashing(keyword)) as string;
+			const clientId = "2";
+			joinRoom(roomId, clientId);
+			setWaiting(true);
+			localStorage.setItem("clientId", clientId);
 			localStorage.setItem("roomId", roomId);
-			window.location.href = "/battle";
 		} catch (e) {
 			console.error(e);
+			setWaiting(false);
 			alert("部屋が存在しません");
+			localStorage.clear();
 		}
 	};
 
-	return (
+	useEffect(() => {
+		if (ready) {
+			window.location.href = "/battle";
+		}
+	}, [ready]);
+
+	return !waiting ? (
 		<div
 			style={{
 				height: "100vh",
@@ -111,5 +126,7 @@ export default function Join() {
 				</div>
 			</div>
 		</div>
+	) : (
+		<Loading />
 	);
 }
