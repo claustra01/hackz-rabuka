@@ -40,6 +40,7 @@ app.get(
 export default app;
 
 const server = Bun.serve({
+	port: 33000,
 	fetch: app.fetch,
 	websocket: {
 		open: (ws: ServerWebSocket) => {

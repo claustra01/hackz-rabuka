@@ -3,7 +3,7 @@ import useWebSocket from "../hooks/useWebSocket";
 
 export default function WebSocketComponent() {
 	const [inputMessage, setInputMessage] = useState("");
-	const { socket, message } = useWebSocket("ws://localhost:3000/ws"); // WebSocketサーバーのURL
+	const { socket, message } = useWebSocket("ws://localhost:33000/ws"); // WebSocketサーバーのURL
 
 	const handleSendMessage = () => {
 		if (socket && inputMessage) {
