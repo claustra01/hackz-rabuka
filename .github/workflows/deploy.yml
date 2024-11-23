@@ -2,6 +2,10 @@ name: deploy
 on: 
   push
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs: 
   deploy: 
     runs-on: ubuntu-latest 
@@ -41,7 +45,7 @@ jobs:
           git commit -m "[bot] update deployment URL in README" || echo "No changes to commit"
           git push origin update-readme
 
-      - name: Create Pull Request
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -49,3 +53,22 @@ jobs:
           head: update-readme
           title: "[bot] Update Deployment URL"
           body: "Automatic update of deployment URL in README file"
+
+      - name: Merge pull request
+        uses: github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: 1
+            });
+
+            if (pr.data.state === 'open') {
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: 1
+              });
+            }
