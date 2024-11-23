@@ -30,7 +30,15 @@ export default function MicSwitch({
 	};
 
 	return (
-		<button type="button" onClick={handleMic}>
+		<button
+			type="button"
+			onClick={handleMic}
+			style={{
+				position: "fixed",
+				top: "10px",
+				left: "10px",
+			}}
+		>
 			{isPlaying ? "stop" : "Honoを育てる!!"}
 		</button>
 	);

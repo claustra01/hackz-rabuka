@@ -1,6 +1,6 @@
 import { AudioClassifier, FilesetResolver } from "@mediapipe/tasks-audio";
-import { useEffect, useRef, useState } from "hono/jsx";
-import MicSwitch from "./micSwitch";
+import { type RefObject, useEffect, useRef, useState } from "hono/jsx";
+import MicSwitch from "./MicSwitch";
 
 interface voiceResult {
 	first: string;
@@ -8,8 +8,11 @@ interface voiceResult {
 	third: string;
 }
 
-export default function AudioClass() {
-	const [honoPoint, setHonoPoint] = useState<number>(0);
+interface AudioClassProp {
+	honoPoint: RefObject<number>;
+}
+
+export default function AudioClass({ honoPoint }: AudioClassProp) {
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	const [initialized, setInitialized] = useState<boolean>(false);
 	const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -51,6 +54,7 @@ export default function AudioClass() {
 	};
 
 	const startClassifier = async () => {
+		console.log("start");
 		if (!audioCtx) {
 			audioCtx = new AudioContext({ sampleRate: 16000 });
 		} else if (audioCtx.state === "running") {
@@ -81,8 +85,12 @@ export default function AudioClass() {
 							third: `${categories[2].categoryName}·score:·${categories[2].score}`,
 						});
 						for (let i = 0; i < 10; i++) {
-							if (categories[i].categoryName === "Wind") {
-								setHonoPoint((prev) => prev + categories[i].score);
+							if (
+								categories[i].categoryName === "Wind" &&
+								honoPoint.current !== null
+							) {
+								honoPoint.current = categories[i].score + honoPoint.current;
+							} else {
 							}
 						}
 					} else {
@@ -99,18 +107,12 @@ export default function AudioClass() {
 	};
 
 	return (
-		<div>
-			<h1>HonoPoint:{honoPoint}</h1>
+		<>
 			<MicSwitch
 				stream={audioRef}
 				isPlaying={isPlaying}
 				setIsPlaying={setIsPlaying}
 			/>
-			<ul>
-				<li>{result.first}</li>
-				<li>{result.second}</li>
-				<li>{result.third}</li>
-			</ul>
-		</div>
+		</>
 	);
 }
