@@ -30,7 +30,15 @@ export default function GameDisplay() {
 	console.log(ownHonoPoint.current);
 
 	return (
-		<>
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "center",
+				width: "100%",
+				height: "100%",
+			}}
+		>
 			<AudioClass
 				honoPoint={ownHonoPoint}
 				client={clientId}
@@ -38,14 +46,33 @@ export default function GameDisplay() {
 				isReady={isReady}
 				sendMessage={sendMessage}
 			/>
-			{Array.from(fireStatus.entries()).map(([k, v]) => {
-				if (k === roomId) {
-					return Array.from(v.entries()).map(([cliendId, value]) => {
-						return <ThreeCanvas honoPoint={value} key={cliendId} />;
-					});
-				}
-				return null;
-			})}
-		</>
+			<div
+				style={{
+					margin: "auto",
+					display: "flex",
+					flexDirection: "row",
+					justifyContent: "center",
+					alignItems: "center",
+					textAlign: "center",
+					width: "100%",
+					height: "100%",
+					gap: "10%",
+				}}
+			>
+				{Array.from(fireStatus.entries()).map(([k, v]) => {
+					if (k === roomId) {
+						return Array.from(v.entries()).map(([cId, value]) => {
+							return (
+								<div>
+									<ThreeCanvas honoPoint={value} key={cId} />
+									<h2>{cId === clientId ? "自分" : "相手"}</h2>
+								</div>
+							);
+						});
+					}
+					return null;
+				})}
+			</div>
+		</div>
 	);
 }
