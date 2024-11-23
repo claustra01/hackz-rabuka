@@ -3,10 +3,9 @@ import { Hono } from "hono";
 import { createBunWebSocket } from "hono/bun";
 import type { WSContext } from "hono/ws";
 import {
+	ErrorMessage,
 	SystemMessage,
 	isConnectRoomMessage,
-	isResultMessage,
-	isSystemMessage,
 	isUpdateFireMessage,
 } from "./schemas";
 
@@ -63,6 +62,7 @@ const server = Bun.serve({
 		},
 		message: (ws: ServerWebSocket, message: string) => {
 			const data = JSON.parse(message);
+
 			if (isConnectRoomMessage(data)) {
 				switch (data.message) {
 					case "create": {
@@ -70,7 +70,7 @@ const server = Bun.serve({
 						RoomMap.set(roomHash, {
 							status: "waiting",
 							updatedAt: new Date(),
-						});
+						} as RoomInfo);
 						break;
 					}
 					case "join": {
@@ -79,14 +79,13 @@ const server = Bun.serve({
 							RoomMap.set(roomHash, {
 								status: "playing",
 								updatedAt: new Date(),
-							});
-
+							} as RoomInfo);
 							ws.send(
 								JSON.stringify({
 									type: "system",
 									roomHash: roomHash,
 									message: "start",
-								}),
+								} as SystemMessage),
 							);
 						} else {
 							ws.send(
@@ -94,7 +93,7 @@ const server = Bun.serve({
 									type: "error",
 									roomHash: roomHash,
 									message: "room is not exist",
-								}),
+								} as ErrorMessage),
 							);
 						}
 						break;
@@ -105,6 +104,13 @@ const server = Bun.serve({
 			if (isUpdateFireMessage(data)) {
 				ws.send(JSON.stringify(data));
 			}
+
+			Array.from(RoomMap.entries()).forEach(([roomHash, roomInfo]) => {
+				// 5分以上更新されていない部屋は削除
+				if (roomInfo.updatedAt.getTime() + 1000 * 60 * 5 < Date.now()) {
+					RoomMap.delete(roomHash);
+				}
+			});
 		},
 
 		close: (ws: ServerWebSocket) => {
