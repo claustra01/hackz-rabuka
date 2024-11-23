@@ -32,44 +32,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - id: "auth"
-        uses: google-github-actions/auth@v2
+      - name: SSH login
+        uses: appleboy/ssh-action@v1
         with:
-          credentials_json: "${{ secrets.GCLOUD_AUTH }}"
-
-      - name: Setup google cloud
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
-          project_id: ${{ secrets.PROJECT_ID }}
-
-      - name: Configure docker
-        run: gcloud auth configure-docker $REGION-docker.pkg.dev
-        env:
-          REGION: asia-northeast1
-
-      - name: Push
-        run: |
-          cd websocket
-          docker build --platform linux/amd64 -t $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG .
-          docker push $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          SERVICE_NAME: websocket
-          IMAGE: image
-          TAG: latest
-          REGION: asia-northeast1
-
-      - name: Deploy
-        run: | 
-          gcloud run deploy $SERVICE_NAME \
-            --image $REGION-docker.pkg.dev/$PROJECT_ID/$SERVICE_NAME/$IMAGE:$TAG \
-            --platform managed \
-            --region $REGION \
-            --allow-unauthenticated
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          SERVICE_NAME: websocket
-          IMAGE: image
-          TAG: latest
-          REGION: asia-northeast1
+          key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "Logged in successfully"
