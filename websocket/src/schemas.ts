@@ -32,7 +32,6 @@ export type ResultMessage = {
 export type ErrorMessage = {
 	type: "error";
 	roomHash: string;
-	clientId: string;
 	message: string;
 };
 
@@ -110,8 +109,6 @@ export const isErrorMessage = (msg: unknown): msg is ErrorMessage => {
 		msg.type === "error" &&
 		"roomHash" in msg &&
 		typeof msg.roomHash === "string" &&
-		"clientId" in msg &&
-		typeof msg.clientId === "string" &&
 		"message" in msg &&
 		typeof msg.message === "string"
 	);
