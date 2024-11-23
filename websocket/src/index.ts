@@ -80,7 +80,8 @@ const server = Bun.serve({
 								status: "playing",
 								updatedAt: new Date(),
 							} as RoomInfo);
-							ws.send(
+							server.publish(
+								"robby",
 								JSON.stringify({
 									type: "system",
 									roomHash: roomHash,
@@ -88,7 +89,8 @@ const server = Bun.serve({
 								} as SystemMessage),
 							);
 						} else {
-							ws.send(
+							server.publish(
+								"robby",
 								JSON.stringify({
 									type: "error",
 									roomHash: roomHash,
@@ -102,7 +104,7 @@ const server = Bun.serve({
 			}
 
 			if (isUpdateFireMessage(data)) {
-				ws.send(JSON.stringify(data));
+				server.publish("robby", JSON.stringify(data));
 			}
 
 			for (const [roomHash, roomInfo] of Array.from(RoomMap.entries())) {
