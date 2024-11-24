@@ -7,7 +7,6 @@ import type { WSContext } from "hono/ws";
 import { z } from "zod";
 import {
 	type ErrorMessage,
-	type ResultMessage,
 	type SystemMessage,
 	isConnectRoomMessage,
 	isUpdateFireMessage,
@@ -172,19 +171,6 @@ const server = Bun.serve({
 					server.publish("robby", JSON.stringify(data));
 					// 3.0に達したらゲーム終了
 					if (data.value > 3.0) {
-						// 最終結果
-						const result = roomMap.get(data.roomHash)?.scores.map((score) => {
-							const [[clientId, value]] = Array.from(score.entries());
-							return { clientId, value };
-						});
-						server.publish(
-							"robby",
-							JSON.stringify({
-								type: "result",
-								roomHash: data.roomHash,
-								result: result || [],
-							} as unknown as ResultMessage),
-						);
 						// 終了通知
 						server.publish(
 							"robby",
