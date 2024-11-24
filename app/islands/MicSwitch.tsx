@@ -29,24 +29,33 @@ export default function MicSwitch({
 		}
 	};
 
-	useEffect(() => {
-		if (!isPlaying) {
-			handleMic();
-		}
-	}, []);
-
 	return (
-		<button
-			type="button"
-			onClick={handleMic}
-			style={{
-				position: "fixed",
-				bottom: "10px",
-				left: "10px",
-				zIndex: "100",
-			}}
-		>
-			{isPlaying ? "stop" : "Honoを育てる!!"}
-		</button>
+		<>
+			{!isPlaying ? (
+				<button
+					type="button"
+					onClick={handleMic}
+					style={{
+						padding: "1rem 2rem",
+						backgroundColor: "#dc2626",
+						color: "white",
+						borderRadius: "1rem",
+						fontSize: "1.5rem",
+						fontWeight: "600",
+						transition: "background-color 0.3s, transform 0.3s",
+						border: "none",
+						boxShadow:
+							"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+						position: "absolute",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						zIndex: "100",
+					}}
+				>
+					{isPlaying ? "stop" : "Honoを育てる!!"}
+				</button>
+			) : null}
+		</>
 	);
 }
