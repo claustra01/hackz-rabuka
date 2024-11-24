@@ -29,6 +29,12 @@ export default function MicSwitch({
 		}
 	};
 
+	useEffect(() => {
+		if (!isPlaying) {
+			handleMic();
+		}
+	}, []);
+
 	return (
 		<button
 			type="button"
