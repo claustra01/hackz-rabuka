@@ -1,4 +1,5 @@
 import { useEffect } from "hono/jsx";
+import { scaleUpButton } from "../utils/style";
 
 export default function Top() {
 	const toCreate = () => {
@@ -59,10 +60,8 @@ export default function Top() {
 							border: "none",
 							boxShadow:
 								"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-							":hover": {
-								transform: "scale(1.05)",
-							},
 						}}
+						class={scaleUpButton}
 					>
 						部屋を作成
 					</button>
@@ -84,6 +83,7 @@ export default function Top() {
 								transform: "scale(1.05)",
 							},
 						}}
+						class={scaleUpButton}
 					>
 						部屋に入る
 					</button>

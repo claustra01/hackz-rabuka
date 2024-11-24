@@ -2,6 +2,7 @@ import { useEffect, useState } from "hono/jsx";
 import {
 	type SystemMessage,
 	type connectRoomMessage,
+	isErrorMessage,
 	isSystemMessage,
 } from "../../websocket/src/schemas";
 import useWebSocket from "./useWebSocket";
@@ -31,6 +32,9 @@ const useConnectRoom = () => {
 			if (data.message === "start") {
 				setReady(true);
 			}
+		} else if (isErrorMessage(data)) {
+			alert("部屋が見つかりませんでした");
+			window.location.href = "/join";
 		}
 	}, [message]);
 

@@ -11,16 +11,16 @@ export const filterMiddleware = async (c: Context, next: Next) => {
         /* 炎が穏やかに揺らぐアニメーション */
         @keyframes flameFlicker {
           0% {
-            filter: hue-rotate(-5deg) brightness(1) blur(4px);
-            transform: scale(1.1) skewX(6deg);
+            filter: hue-rotate(-5deg) brightness(1) blur(1.5px);
+            transform: scale(1.1) skewX(4deg);
           }
           50% {
-            filter: hue-rotate(5deg) brightness(1.1) blur(2px);
+            filter: hue-rotate(5deg) brightness(1.1) blur(1px);
             transform: scale(1.01) skewX(0deg);
           }
           100% {
-            filter: hue-rotate(-5deg) brightness(1) blur(3px);
-            transform: scale(1.05) skewX(-4deg);
+            filter: hue-rotate(-5deg) brightness(1) blur(2px);
+            transform: scale(1.05) skewX(-2deg);
           }
         }
 
