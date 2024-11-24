@@ -1,6 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import type { ServerWebSocket } from "bun";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { createBunWebSocket } from "hono/bun";
 import type { WSContext } from "hono/ws";
 import { z } from "zod";
@@ -15,38 +16,43 @@ import {
 const app = new Hono();
 
 const querySchema = z.object({
-	roomHash: z.string(),
+	roomId: z.string(),
 });
 
 const responseSchema = z.array(
 	z.object({
 		clientid: z.string(),
-		score: z.number(),
+		value: z.number(),
 	}),
 );
 
-const routes = app.get("/result", zValidator("query", querySchema), (c) => {
-	const { roomHash } = c.req.valid("query");
+const routes = app.get("/result",
+	cors({
+		origin: ['http://localhost:5173', 'https://main.hackz-rabuka.pages.dev/'],
+		credentials: false,
+	}),
+	zValidator("query", querySchema), (c) => {
+		const { roomId } = c.req.valid("query");
 
-	const data = roomMap.get(roomHash);
+		const data = roomMap.get(roomId);
 
-	if (!data) {
-		return c.json({ error: "Room not found" }, 404);
-	}
+		if (!data) {
+			return c.json({ error: "Room not found" }, 404);
+		}
 
-	const responseData = data.scores.map((scoreMap: Map<string, number>) => {
-		const [clientid, score] = Array.from(scoreMap.entries())[0];
-		return { clientid, score };
+		const responseData = data.scores.map((scoreMap: Map<string, number>) => {
+			const [clientid, value] = Array.from(scoreMap.entries())[0];
+			return { clientid, value };
+		});
+
+		const result = responseSchema.safeParse(responseData);
+		if (!result.success) {
+			console.error("parse error:", result.error);
+			return c.json({ error: "Invalid data format" }, 500);
+		}
+
+		return c.json(result.data);
 	});
-
-	const result = responseSchema.safeParse(responseData);
-	if (!result.success) {
-		console.error("parse error:", result.error);
-		return c.json({ error: "Invalid data format" }, 500);
-	}
-
-	return c.json(result.data);
-});
 
 export type AppType = typeof routes;
 
