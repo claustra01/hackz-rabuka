@@ -1,8 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
 import type { ServerWebSocket } from "bun";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 import { createBunWebSocket } from "hono/bun";
+import { cors } from "hono/cors";
 import type { WSContext } from "hono/ws";
 import { z } from "zod";
 import {
@@ -26,12 +26,14 @@ const responseSchema = z.array(
 	}),
 );
 
-const routes = app.get("/result",
+const routes = app.get(
+	"/result",
 	cors({
-		origin: ['http://localhost:5173', 'https://main.hackz-rabuka.pages.dev/'],
+		origin: ["http://localhost:5173", "https://main.hackz-rabuka.pages.dev/"],
 		credentials: false,
 	}),
-	zValidator("query", querySchema), (c) => {
+	zValidator("query", querySchema),
+	(c) => {
 		const { roomId } = c.req.valid("query");
 
 		const data = roomMap.get(roomId);
@@ -52,7 +54,8 @@ const routes = app.get("/result",
 		}
 
 		return c.json(result.data);
-	});
+	},
+);
 
 export type AppType = typeof routes;
 
