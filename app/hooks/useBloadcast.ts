@@ -1,6 +1,7 @@
 import { useEffect, useState } from "hono/jsx";
 import {
 	type UpdateFireMessage,
+	isSystemMessage,
 	isUpdateFireMessage,
 } from "../../websocket/src/schemas";
 import useWebSocket from "./useWebSocket";
@@ -9,7 +10,9 @@ import useWebSocket from "./useWebSocket";
 export type FireStatus = Map<string, Map<string, number>>;
 
 export const useBloadcast = () => {
+	const [roomHash, setRoomHash] = useState("");
 	const [isReady, setIsReady] = useState(false);
+	const [isFinished, setIsFinished] = useState(false);
 	const [fireStatus, setFireStatus] = useState<FireStatus>(new Map());
 	const { socket, message } = useWebSocket();
 
@@ -19,8 +22,21 @@ export const useBloadcast = () => {
 		}
 	};
 
+	const init = (roomHash: string) => {
+		setRoomHash(roomHash);
+		setFireStatus(
+			new Map(fireStatus).set(
+				roomHash,
+				new Map([
+					["1", 1],
+					["2", 1],
+				]),
+			),
+		);
+	};
+
 	useEffect(() => {
-		if (socket && socket.readyState === WebSocket.OPEN) {
+		if (socket) {
 			setIsReady(true);
 		} else {
 			setIsReady(false);
@@ -34,7 +50,12 @@ export const useBloadcast = () => {
 			room.set(data.clientId, data.value);
 			setFireStatus(new Map(fireStatus).set(data.roomHash, room));
 		}
+		if (isSystemMessage(data)) {
+			if (data.message === "finish" && data.roomHash === roomHash) {
+				setIsFinished(true);
+			}
+		}
 	}, [message]);
 
-	return { isReady, fireStatus, sendMessage };
+	return { isReady, isFinished, fireStatus, sendMessage, init };
 };
