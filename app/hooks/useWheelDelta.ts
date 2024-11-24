@@ -1,4 +1,4 @@
-import { useEffect, useState } from "hono/jsx";
+import { useEffect, useRef, useState } from "hono/jsx";
 
 interface WheelEventState {
 	deltaX: number;
@@ -6,24 +6,27 @@ interface WheelEventState {
 }
 
 export const useMouseWheel = () => {
-	const [wheelState, setWheelState] = useState<WheelEventState>({
+	const wheelState = useRef<WheelEventState>({
 		deltaX: 0,
 		deltaY: 0,
 	});
 
 	const resetDelta = () => {
-		setWheelState({
+		wheelState.current = {
 			deltaX: 0,
 			deltaY: 0,
-		});
+		};
 	};
 
 	useEffect(() => {
 		const handleWheel = (event: WheelEvent) => {
-			setWheelState((prevState) => ({
-				deltaX: prevState.deltaX + Math.abs(event.deltaX),
-				deltaY: prevState.deltaY + Math.abs(event.deltaY),
-			}));
+			console.log("useMouseWheel effect");
+			if (wheelState.current !== null) {
+				wheelState.current = {
+					deltaX: Math.abs(event.deltaX) + wheelState.current.deltaX,
+					deltaY: Math.abs(event.deltaY + wheelState.current.deltaY),
+				};
+			}
 		};
 
 		window.addEventListener("wheel", handleWheel);

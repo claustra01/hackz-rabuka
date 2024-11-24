@@ -1,5 +1,4 @@
-import { use, useEffect, useRef, useState } from "hono/jsx";
-import { UpdateFireMessage } from "../../websocket/src/schemas";
+import { useEffect, useRef, useState } from "hono/jsx";
 import { useBloadcast } from "../hooks/useBloadcast";
 import AudioClass from "./AudioClass";
 import ThreeCanvas from "./ThreeCanvas";
