@@ -35,8 +35,9 @@ export default function MicSwitch({
 			onClick={handleMic}
 			style={{
 				position: "fixed",
-				top: "10px",
+				bottom: "10px",
 				left: "10px",
+				zIndex: "100",
 			}}
 		>
 			{isPlaying ? "stop" : "Honoを育てる!!"}

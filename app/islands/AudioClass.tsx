@@ -1,5 +1,6 @@
 import { AudioClassifier, FilesetResolver } from "@mediapipe/tasks-audio";
 import { type RefObject, useEffect, useRef, useState } from "hono/jsx";
+import type { UpdateFireMessage } from "../../websocket/src/schemas";
 import MicSwitch from "./MicSwitch";
 
 interface voiceResult {
@@ -10,9 +11,19 @@ interface voiceResult {
 
 interface AudioClassProp {
 	honoPoint: RefObject<number>;
+	client: string;
+	room: string;
+	isReady: boolean;
+	sendMessage: (obj: UpdateFireMessage) => void;
 }
 
-export default function AudioClass({ honoPoint }: AudioClassProp) {
+export default function AudioClass({
+	honoPoint,
+	client,
+	room,
+	isReady,
+	sendMessage,
+}: AudioClassProp) {
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
 	const [initialized, setInitialized] = useState<boolean>(false);
 	const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -89,7 +100,15 @@ export default function AudioClass({ honoPoint }: AudioClassProp) {
 								categories[i].categoryName === "Wind" &&
 								honoPoint.current !== null
 							) {
-								honoPoint.current = categories[i].score + honoPoint.current;
+								const postHonoPoint = categories[i].score + honoPoint.current;
+								if (isReady) {
+									sendMessage({
+										type: "updateFire",
+										roomHash: `${room}`,
+										clientId: `${client}`,
+										value: Number.parseFloat(postHonoPoint.toFixed(2)),
+									});
+								}
 							} else {
 							}
 						}
