@@ -22,16 +22,6 @@ export type SystemMessage = {
 };
 
 // server -> client
-export type ResultMessage = {
-	type: "result";
-	roomHash: string;
-	result: {
-		clientId: number;
-		value: number;
-	}[];
-};
-
-// server -> client
 export type ErrorMessage = {
 	type: "error";
 	roomHash: string;
@@ -85,29 +75,6 @@ export const isSystemMessage = (msg: unknown): msg is SystemMessage => {
 		"message" in msg &&
 		typeof msg.message === "string" &&
 		(msg.message === "start" || msg.message === "finish")
-	);
-};
-
-export const isResultMessage = (msg: unknown): msg is ResultMessage => {
-	return (
-		typeof msg === "object" &&
-		msg !== null &&
-		"type" in msg &&
-		typeof msg.type === "string" &&
-		msg.type === "result" &&
-		"roomHash" in msg &&
-		typeof msg.roomHash === "string" &&
-		"result" in msg &&
-		Array.isArray(msg.result) &&
-		msg.result.every(
-			(result) =>
-				typeof result === "object" &&
-				result !== null &&
-				"clientId" in result &&
-				typeof result.clientId === "number" &&
-				"value" in result &&
-				typeof result.value === "number",
-		)
 	);
 };
 
