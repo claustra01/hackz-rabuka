@@ -21,6 +21,12 @@ jobs:
         with: 
           node-version: '22'
 
+      - name: Set environment variables 
+        run: | 
+          sed -i "s/localhost:33000/${SERVER_DOMAIN}/g" ./app/utils/const.ts
+        env:
+          SERVER_DOMAIN: ${{ secrets.SERVER_DOMAIN }}
+
       - name: Deploy
         run: | 
           npm install 

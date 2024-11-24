@@ -1,6 +1,7 @@
 import { hc } from "hono/client";
 import { useEffect, useState } from "hono/jsx";
 import type { AppType } from "../../websocket/src";
+import { serverDomain } from "../utils/const";
 import { scaleUpButton } from "../utils/style";
 
 type resultData = {
@@ -24,7 +25,7 @@ export default function Result() {
 				return;
 			}
 			try {
-				const client = hc<AppType>("http://localhost:33000/");
+				const client = hc<AppType>(`http://${serverDomain}/`);
 				const res = await client.result.$get({
 					query: { roomId },
 				});
