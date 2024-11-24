@@ -28,7 +28,7 @@ const responseSchema = z.array(
 const routes = app.get(
 	"/result",
 	cors({
-		origin: ["http://localhost:5173", "https://main.hackz-rabuka.pages.dev/"],
+		origin: ["http://localhost:5173", "https://main.hackz-rabuka.pages.dev"],
 		credentials: false,
 	}),
 	zValidator("query", querySchema),
