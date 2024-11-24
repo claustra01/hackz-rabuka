@@ -1,6 +1,7 @@
 import { AudioClassifier, FilesetResolver } from "@mediapipe/tasks-audio";
 import { type RefObject, useEffect, useRef, useState } from "hono/jsx";
 import type { UpdateFireMessage } from "../../websocket/src/schemas";
+import { useMouseWheel } from "../hooks/useWheelDelta";
 import MicSwitch from "./MicSwitch";
 
 interface voiceResult {
@@ -34,6 +35,7 @@ export default function AudioClass({
 	});
 	const [audioClassifier, setAudioClassifier] =
 		useState<AudioClassifier | null>(null);
+	const { wheelState, resetDelta } = useMouseWheel();
 	const audioRef = useRef<MediaStream | null>(null);
 	let audioCtx: AudioContext;
 
@@ -85,7 +87,7 @@ export default function AudioClass({
 				scriptNode.onaudioprocess = (audioProcessingEvent) => {
 					const inputBuffer = audioProcessingEvent.inputBuffer;
 					const inputData = inputBuffer.getChannelData(0);
-
+					let postHonoPoint = honoPoint.current;
 					// Classify the audio
 					if (inputData !== undefined) {
 						const result = audioClassifier.classify(inputData);
@@ -96,24 +98,35 @@ export default function AudioClass({
 							third: `${categories[2].categoryName}·score:·${categories[2].score}`,
 						});
 						for (let i = 0; i < 10; i++) {
-							if (
-								categories[i].categoryName === "Wind" &&
-								honoPoint.current !== null
-							) {
-								const postHonoPoint = categories[i].score + honoPoint.current;
-								if (isReady) {
-									sendMessage({
-										type: "updateFire",
-										roomHash: `${room}`,
-										clientId: `${client}`,
-										value: Number.parseFloat(postHonoPoint.toFixed(2)),
-									});
+							if (categories[i].categoryName === "Wind") {
+								if (postHonoPoint !== null) {
+									postHonoPoint += categories[i].score;
 								}
-							} else {
 							}
 						}
 					} else {
 						console.log("data is undefined");
+					}
+					if (
+						postHonoPoint !== null &&
+						wheelState.current &&
+						wheelState.current.deltaY !== undefined
+					) {
+						postHonoPoint += wheelState.current.deltaY / 3000;
+						resetDelta();
+					}
+					console.log(postHonoPoint);
+					if (
+						isReady &&
+						postHonoPoint !== null &&
+						postHonoPoint !== honoPoint.current
+					) {
+						sendMessage({
+							type: "updateFire",
+							roomHash: `${room}`,
+							clientId: `${client}`,
+							value: Number.parseFloat(postHonoPoint.toFixed(2)),
+						});
 					}
 				};
 
