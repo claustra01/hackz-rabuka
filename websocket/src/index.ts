@@ -29,6 +29,7 @@ const routes = app.get(
 	"/result",
 	cors({
 		origin: ["http://localhost:5173", "https://main.hackz-rabuka.pages.dev"],
+		allowHeaders: ["*"],
 		allowMethods: ["*"],
 		credentials: false,
 	}),
