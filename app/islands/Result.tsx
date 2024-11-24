@@ -1,8 +1,9 @@
 import { hc } from "hono/client";
 import { useEffect, useState } from "hono/jsx";
 import type { AppType } from "../../websocket/src";
-import { serverDomain } from "../utils/const";
+import { serverURL } from "../utils/const";
 import { scaleUpButton } from "../utils/style";
+import Loading from "./Loading";
 
 type resultData = {
 	clientid: string;
@@ -25,7 +26,7 @@ export default function Result() {
 				return;
 			}
 			try {
-				const client = hc<AppType>(`http://${serverDomain}/`);
+				const client = hc<AppType>(serverURL);
 				const res = await client.result.$get({
 					query: { roomId },
 				});
@@ -125,17 +126,6 @@ export default function Result() {
 			</button>
 		</div>
 	) : (
-		<div
-			style={{
-				height: "100vh",
-				width: "100%",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				background: "linear-gradient(to bottom, #ffff00, #ffaa00, #ff5500)",
-			}}
-		>
-			<h1>Loading...</h1>
-		</div>
+		<Loading />
 	);
 }
