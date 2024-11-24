@@ -6,8 +6,8 @@ import {
 } from "../../websocket/src/schemas";
 import useWebSocket from "./useWebSocket";
 
-// { roomHash: { clientId: value } }
-export type FireStatus = Map<string, Map<string, number>>;
+// { clientId: value }
+export type FireStatus = Map<string, number>;
 
 export const useBloadcast = () => {
 	const [roomHash, setRoomHash] = useState("");
@@ -24,15 +24,8 @@ export const useBloadcast = () => {
 
 	const init = (roomHash: string) => {
 		setRoomHash(roomHash);
-		setFireStatus(
-			new Map(fireStatus).set(
-				roomHash,
-				new Map([
-					["1", 1],
-					["2", 1],
-				]),
-			),
-		);
+		setFireStatus(new Map(fireStatus).set("1", 1).set("2", 1));
+		console.log(fireStatus);
 	};
 
 	useEffect(() => {
@@ -46,9 +39,14 @@ export const useBloadcast = () => {
 	useEffect(() => {
 		const data = JSON.parse(message);
 		if (isUpdateFireMessage(data)) {
-			const room = fireStatus.get(data.roomHash) || new Map();
-			room.set(data.clientId, data.value);
-			setFireStatus(new Map(fireStatus).set(data.roomHash, room));
+			if (data.roomHash !== roomHash) {
+				return;
+			}
+			setFireStatus((prev) => {
+				const newFireStatus = new Map(prev);
+				newFireStatus.set(data.clientId, data.value);
+				return newFireStatus;
+			});
 		}
 		if (isSystemMessage(data)) {
 			if (data.message === "finish" && data.roomHash === roomHash) {
