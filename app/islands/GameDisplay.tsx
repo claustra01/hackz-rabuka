@@ -33,7 +33,7 @@ export default function GameDisplay() {
 		}
 	}, [isFinished]);
 
-	ownHonoPoint.current = fireStatus.get(roomId)?.get(clientId) || 1;
+	ownHonoPoint.current = fireStatus.get(clientId) || 1;
 	console.log(ownHonoPoint.current);
 
 	return (
@@ -65,45 +65,40 @@ export default function GameDisplay() {
 					height: "100%",
 				}}
 			>
-				{Array.from(fireStatus.entries()).map(([k, v]) => {
-					if (k === roomId) {
-						return Array.from(v.entries()).map(([cId, value]) => {
-							//fireStatusのサイズを取得
-							const size = fireStatus.size + 1;
-							const canvasWidth = window.innerWidth / size;
-							const canvasHeight = window.innerHeight;
-							return (
-								<div
-									key={cId}
-									style={{
-										position: "relative",
-									}}
-								>
-									<ThreeCanvas
-										honoPoint={value}
-										key={cId}
-										canvasWidth={canvasWidth}
-										canvasHeight={canvasHeight}
-									/>
-									<h2
-										style={{
-											height: "0px",
-											//行の高さを0にして、文字を上にずらす
-											lineHeight: "0px",
-											position: "absolute",
-											top: "20px",
-											left: "20px",
-											color: "white",
-											textShadow: "1px 1px 1px black",
-										}}
-									>
-										{cId === clientId ? "自分" : `player: ${cId}`}
-									</h2>
-								</div>
-							);
-						});
-					}
-					return null;
+				{Array.from(fireStatus.entries()).map(([cId, value]) => {
+					//fireStatusのサイズを取得
+					const size = fireStatus.size + 1;
+					const canvasWidth = window.innerWidth / size;
+					const canvasHeight = window.innerHeight;
+					return (
+						<div
+							key={cId}
+							style={{
+								position: "relative",
+							}}
+						>
+							<ThreeCanvas
+								honoPoint={value}
+								key={cId}
+								canvasWidth={canvasWidth}
+								canvasHeight={canvasHeight}
+							/>
+							<h2
+								style={{
+									height: "0px",
+									//行の高さを0にして、文字を上にずらす
+									lineHeight: "0px",
+									position: "absolute",
+									top: "20px",
+									left: "20px",
+									fontSize: "50px",
+									color: "white",
+								}}
+							>
+								{cId === clientId ? "あなた" : "相手"}
+							</h2>
+						</div>
+					);
 				})}
 			</div>
 		</div>
