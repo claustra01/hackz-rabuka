@@ -1,7 +1,6 @@
 import { AudioClassifier, FilesetResolver } from "@mediapipe/tasks-audio";
 import { type RefObject, useEffect, useRef, useState } from "hono/jsx";
 import type { UpdateFireMessage } from "../../websocket/src/schemas";
-import { useMouseWheel } from "../hooks/useWheelDelta";
 import MicSwitch from "./MicSwitch";
 
 interface voiceResult {
@@ -35,7 +34,7 @@ export default function AudioClass({
 	});
 	const [audioClassifier, setAudioClassifier] =
 		useState<AudioClassifier | null>(null);
-	const { wheelState, resetDelta } = useMouseWheel();
+	// const { wheelState, resetDelta } = useMouseWheel();
 	const audioRef = useRef<MediaStream | null>(null);
 	let audioCtx: AudioContext;
 
@@ -107,17 +106,17 @@ export default function AudioClass({
 					} else {
 						console.log("data is undefined");
 					}
-					if (
-						postHonoPoint !== null &&
-						wheelState.current &&
-						wheelState.current.deltaY !== undefined &&
-						honoPoint.current !== null &&
-						honoPoint.current < 2.5
-					) {
-						postHonoPoint += wheelState.current.deltaY / 5000;
-						resetDelta();
-					}
-					console.log(postHonoPoint);
+					// if (
+					// 	postHonoPoint !== null &&
+					// 	wheelState.current &&
+					// 	wheelState.current.deltaY !== undefined &&
+					// 	honoPoint.current !== null &&
+					// 	honoPoint.current < 2.5
+					// ) {
+					// 	postHonoPoint += wheelState.current.deltaY / 5000;
+					// 	resetDelta();
+					// }
+					// console.log(postHonoPoint);
 					if (
 						isReady &&
 						postHonoPoint !== null &&
