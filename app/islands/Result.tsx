@@ -1,7 +1,7 @@
 import { hc } from "hono/client";
 import { useEffect, useState } from "hono/jsx";
-import { scaleUpButton } from "../utils/style";
 import type { AppType } from "../../websocket/src";
+import { scaleUpButton } from "../utils/style";
 
 type resultData = {
 	clientid: string;
@@ -118,7 +118,7 @@ export default function Result() {
 						"0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
 					cursor: "pointer",
 				}}
-        class={scaleUpButton}
+				class={scaleUpButton}
 			>
 				トップへ
 			</button>
