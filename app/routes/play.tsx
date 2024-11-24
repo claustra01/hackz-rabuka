@@ -7,7 +7,7 @@ const className = css`
   height: 100vh;
 `;
 
-export default createRoute(await filterMiddleware, (c) => {
+export default createRoute(filterMiddleware, (c) => {
 	return c.render(
 		<div class={className}>
 			<GameDisplay />
