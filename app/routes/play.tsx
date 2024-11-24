@@ -1,16 +1,7 @@
-import { css } from "hono/css";
 import { createRoute } from "honox/factory";
 import GameDisplay from "../islands/GameDisplay";
+import { filterMiddleware } from "../middlewares/filter";
 
-const className = css`
-  font-family: sans-serif;
-`;
-
-export default createRoute((c) => {
-	const name = c.req.query("name") ?? "Hono";
-	return c.render(
-		<div class={className}>
-			<GameDisplay />
-		</div>,
-	);
+export default createRoute(await filterMiddleware, (c) => {
+	return c.render(<GameDisplay />);
 });
