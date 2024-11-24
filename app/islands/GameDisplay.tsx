@@ -91,11 +91,11 @@ export default function GameDisplay() {
 									position: "absolute",
 									top: "20px",
 									left: "20px",
+									fontSize: "50px",
 									color: "white",
-									textShadow: "1px 1px 1px black",
 								}}
 							>
-								{cId === clientId ? "自分" : `player: ${cId}`}
+								{cId === clientId ? "あなた" : "相手"}
 							</h2>
 						</div>
 					);
