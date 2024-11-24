@@ -41,7 +41,7 @@ export default function Top() {
 					animate={{ scale: 1, opacity: 1 }}
 					transition={{ duration: 0.5 }}
 				>
-					🔥くそデカほのおくん🔥
+					🔥ほのおくん🔥
 				</h1>
 				<div
 					style={{ display: "flex", justifyContent: "space-between", gap: 24 }}
