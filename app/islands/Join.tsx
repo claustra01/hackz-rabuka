@@ -2,6 +2,7 @@ import { useEffect, useState } from "hono/jsx";
 import useConnectRoom from "../hooks/useConnectRoom";
 import useWebSocket from "../hooks/useWebSocket";
 import { hashing } from "../utils/hashing";
+import { scaleUpButton } from "../utils/style";
 import Loading from "./Loading";
 
 export default function Join() {
@@ -99,6 +100,7 @@ export default function Join() {
 								transform: "scale(1.05)",
 							},
 						}}
+						class={scaleUpButton}
 					>
 						戻る
 					</button>
@@ -120,6 +122,7 @@ export default function Join() {
 								transform: "scale(1.05)",
 							},
 						}}
+						class={scaleUpButton}
 					>
 						部屋に入る
 					</button>
