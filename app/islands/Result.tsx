@@ -56,7 +56,9 @@ export default function Result() {
 				height: "100vh",
 				width: "100%",
 				overflow: "hidden",
-				background: "linear-gradient(to bottom, #ffff00, #ffaa00, #ff5500)",
+				background: localStorage.getItem("clientId") === winner
+					? "linear-gradient(to bottom, #ffff00, #ffaa00, #ff5500)"
+					: "linear-gradient(to bottom, #00ffff, #00aaff, #0055ff)",
 				backgroundAttachment: "fixed",
 				display: "flex",
 				flexDirection: "column",
@@ -65,8 +67,7 @@ export default function Result() {
 			}}
 		>
 			<h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-				勝者: {localStorage.getItem("clientId") === winner ? "あなた" : "相手"}{" "}
-				🎉
+				{localStorage.getItem("clientId") === winner ? "You Win !" : "You Lose ……"}
 			</h1>
 			<div
 				style={{
