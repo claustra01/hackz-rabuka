@@ -1,4 +1,5 @@
 import { useEffect, useState } from "hono/jsx";
+import { scaleUpButton } from "../utils/style";
 
 export default function Result() {
 	const [result, setResult] = useState<string>("");
@@ -51,6 +52,7 @@ export default function Result() {
 								transform: "scale(1.05)",
 							},
 						}}
+						class={scaleUpButton}
 					>
 						トップへ
 					</button>
