@@ -43,6 +43,10 @@ export default function Create() {
 		}
 	}, [ready]);
 
+	useEffect(() => {
+		localStorage.clear();
+	}, []);
+
 	return !waiting ? (
 		<div
 			style={{

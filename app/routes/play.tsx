@@ -4,6 +4,7 @@ import GameDisplay from "../islands/GameDisplay";
 
 const className = css`
   font-family: sans-serif;
+  height: 100vh;
 `;
 
 export default createRoute((c) => {
